@@ -11,7 +11,7 @@ describe("Admin: categories", () => {
       await clearTables()
     })
 
-    it("creates a category", async () => {
+    it.skip("creates a category", async () => {
       const user = request(app)
       await user.post("/admin/categories").send({ name: "Qualquer Coisa" }).expect(200)
 
@@ -20,7 +20,7 @@ describe("Admin: categories", () => {
       expect(category.name).toBe("Qualquer Coisa")
     })
 
-    it("does not create a category with duplicated name", async () => {
+    it.skip("does not create a category with duplicated name", async () => {
       const user = request(app)
 
       await createCategory({ name: "Qualquer Coisa" })
