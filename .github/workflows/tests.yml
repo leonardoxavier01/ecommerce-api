@@ -25,6 +25,21 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: ecommerce
+          POSTGRES_USER: ecommerce
+          POSTGRES_DB: ecommerce
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - uses: actions/checkout@v3
 
@@ -36,5 +51,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Migrate
+        run: npm run ci:migrate
+        env:
+          DATABASE_URL: postgresql://ecommerce:ecommerce@localhost:5432/ecommerce?schema=public
+
       - name: Run tests
-        run: npm run test
+        run: npm run ci:test
+        env:
+          DATABASE_URL: postgresql://ecommerce:ecommerce@localhost:5432/ecommerce?schema=public

@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "rootDir": "./",
+    "baseUrl": ".",
     "paths": {
-      "@src/*": ["./src/*"]
+      "@src/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
     },
     "target": "es2016",
     "lib": ["es6"],
