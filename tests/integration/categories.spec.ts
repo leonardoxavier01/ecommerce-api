@@ -1,5 +1,5 @@
-import { createCategory } from "@tests/factories"
-import { clearTables } from "@tests/database"
+import { createCategory } from "@tests/factories";
+import { clearTables } from "@tests/database";
 
 import app from "@src/app";
 import request from "supertest";
@@ -7,12 +7,12 @@ import request from "supertest";
 describe("Categories", () => {
   describe("GET /categories", () => {
     beforeAll(async () => {
-      await createCategory({ name: "Jogos" })
-      await createCategory({ name: "Hardware" })
+      await createCategory({ name: "Jogos" });
+      await createCategory({ name: "Hardware" });
     });
 
     afterAll(async () => {
-      await clearTables()
+      await clearTables();
     });
 
     it("returns a list of categories in JSON format", async () => {

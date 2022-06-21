@@ -12,9 +12,9 @@ app.get("/categories", async (req: Request, res: Response) => {
 });
 
 app.post("/admin/categories", async (req: Request, res: Response) => {
-  console.log(req)
+  console.log(req);
 
-  res.json({})
+  res.json({});
 });
 
 export default app;

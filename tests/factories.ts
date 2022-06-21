@@ -5,8 +5,8 @@ interface CategoryInput {
 }
 
 export const createCategory = async (params: CategoryInput) => {
-  const { name } = params
-  const data = { name }
+  const { name } = params;
+  const data = { name };
 
-  return database.category.create({ data })
-}
+  return database.category.create({ data });
+};
