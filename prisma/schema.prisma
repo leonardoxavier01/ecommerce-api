@@ -13,4 +13,13 @@ datasource db {
 model Category {
   id String @default(cuid()) @id
   name String @unique
+  products Product[]
+}
+
+model Product {
+  id String @default(cuid()) @id
+  name String
+  price Float @default(0.0)
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId String
 }

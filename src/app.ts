@@ -11,6 +11,14 @@ app.get("/categories", async (req: Request, res: Response) => {
   res.json(categories);
 });
 
+app.get("/categories/:id/products", async (req: Request, res: Response) => {
+  res.json([])
+});
+
+app.get("/products/:id", async (req: Request, res: Response) => {
+  res.json({})
+});
+
 app.post("/admin/categories", async (req: Request, res: Response) => {
   console.log(req);
 
