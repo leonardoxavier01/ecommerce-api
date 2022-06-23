@@ -7,6 +7,8 @@ import request from "supertest";
 describe("Categories", () => {
   describe("GET /categories", () => {
     beforeAll(async () => {
+      await clearTables()
+
       await createCategory({ name: "Jogos" });
       await createCategory({ name: "Hardware" });
     });
