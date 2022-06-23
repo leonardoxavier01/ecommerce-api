@@ -8,7 +8,7 @@
     "prettier": "prettier --write './**/*.ts'",
     "test": "DATABASE_URL=postgresql://ecommerce:ecommerce@localhost:5432/ecommerce_test?schema=public jest",
     "test:migrate": "DATABASE_URL=postgresql://ecommerce:ecommerce@localhost:5432/ecommerce_test?schema=public prisma migrate dev",
-    "ci:test": "jest",
+    "ci:test": "jest --runInBand",
     "ci:migrate": "prisma migrate dev"
   },
   "keywords": [],
@@ -31,6 +31,7 @@
     "@prisma/client": "^3.15.1",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "pino": "^8.1.0",
     "tsconfig-paths": "^4.0.0"
   }
 }
