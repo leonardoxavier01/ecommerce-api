@@ -1,4 +1,5 @@
 import { database } from "@src/adapters/database";
+import productService, {ProductProps} from "@src/services/productService";
 
 interface CategoryInput {
   name: string;
@@ -11,13 +12,8 @@ export const createCategory = async (params: CategoryInput) => {
   return database.category.create({ data });
 };
 
-interface ProductInput {
-  name: string;
-  categoryId: string;
-}
-
-export const createProduct = async (params: ProductInput) => {
+export const createProduct = async (params: ProductProps) => {
   const { name, categoryId } = params;
-  const data = { name, categoryId };
-  return database.product.create({ data });
+
+  return productService.create({ name, categoryId });
 };
