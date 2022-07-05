@@ -5,3 +5,15 @@ export const find = async () => {
 
   return categories;
 };
+
+const findOne = async (categoryId: string) => {
+  const category = await database.category.findUnique({
+    where: {
+      id: categoryId,
+    },
+  });
+
+  return category;
+};
+
+export default { find, findOne }
