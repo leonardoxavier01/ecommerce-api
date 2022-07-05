@@ -28,4 +28,32 @@ const findOne = async (productId: string) => {
   return product;
 };
 
-export default { find, findOne };
+export interface ProductProps {
+  name: string;
+  categoryId: string;
+  price?: number;
+  priceWidthDiscount?: number;
+  description?: string;
+  headline?: string;
+}
+
+const create = async (props: ProductProps) => {
+  const { name, categoryId, price, priceWidthDiscount, description, headline } =
+    props;
+
+  const slug = name.replace("", "-").toLowerCase();
+
+  const data = {
+    name,
+    slug,
+    categoryId,
+    price,
+    priceWidthDiscount,
+    description,
+    headline,
+  };
+
+  return database.product.create({ data });
+};
+
+export default { find, findOne, create };

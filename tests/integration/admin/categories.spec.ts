@@ -1,6 +1,6 @@
-import { find } from "@src/services/categoryService"
-import { createCategory } from "@tests/factories"
-import { clearTables } from "@tests/database"
+import { find } from "@src/services/categoryService";
+import { createCategory } from "@tests/factories";
+import { clearTables } from "@tests/database";
 
 import app from "@src/app";
 import request from "supertest";
@@ -8,28 +8,34 @@ import request from "supertest";
 describe("Admin: categories", () => {
   describe("GET /admin/categories", () => {
     afterAll(async () => {
-      await clearTables()
-    })
+      await clearTables();
+    });
 
     it.skip("creates a category", async () => {
-      const user = request(app)
-      await user.post("/admin/categories").send({ name: "Qualquer Coisa" }).expect(200)
+      const user = request(app);
+      await user
+        .post("/admin/categories")
+        .send({ name: "Qualquer Coisa" })
+        .expect(200);
 
-      const [category] = await find()
+      const [category] = await find();
 
-      expect(category.name).toBe("Qualquer Coisa")
-    })
+      expect(category.name).toBe("Qualquer Coisa");
+    });
 
     it.skip("does not create a category with duplicated name", async () => {
-      const user = request(app)
+      const user = request(app);
 
-      await createCategory({ name: "Qualquer Coisa" })
+      await createCategory({ name: "Qualquer Coisa" });
 
-      await user.post("/admin/categories").send({ name: "Qualquer Coisa" }).expect(400)
+      await user
+        .post("/admin/categories")
+        .send({ name: "Qualquer Coisa" })
+        .expect(400);
 
-      const categories = await find()
+      const categories = await find();
 
-      expect(categories.length).toBe(1)
-    })
-  })
-})
+      expect(categories.length).toBe(1);
+    });
+  });
+});

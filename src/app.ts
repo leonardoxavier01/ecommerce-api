@@ -3,14 +3,24 @@ import express from "express";
 import { Request, Response } from "express";
 import logger from "@src/adapters/logger";
 import { find } from "@src/services/categoryService";
+
+import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
 
 const app = express();
 
 app.get("/categories", async (req: Request, res: Response) => {
-  const categories = await find();
+  const categories = await categoryService.find();
 
   res.json(categories);
+});
+
+app.get("/categories/:id", async (req: Request, res: Response) => {
+  const categoryId = req.params.id;
+
+  const category = await categoryService.findOne(categoryId);
+
+  res.json(category);
 });
 
 app.get("/categories/:id/products", async (req: Request, res: Response) => {
