@@ -7,7 +7,6 @@ import { find } from "@src/services/categoryService";
 import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
 
-
 const app = express();
 
 app.get("/categories", async (req: Request, res: Response) => {
@@ -23,7 +22,6 @@ app.get("/categories/:id", async (req: Request, res: Response) => {
 
   res.json(category);
 });
-
 
 app.get("/categories/:id/products", async (req: Request, res: Response) => {
   const categoryId = req.params.id;

@@ -16,4 +16,4 @@ const findOne = async (categoryId: string) => {
   return category;
 };
 
-export default { find, findOne }
+export default { find, findOne };

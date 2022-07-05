@@ -1,5 +1,5 @@
 import { database } from "@src/adapters/database";
-import productService, {ProductProps} from "@src/services/productService";
+import productService, { ProductProps } from "@src/services/productService";
 
 interface CategoryInput {
   name: string;

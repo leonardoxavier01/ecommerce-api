@@ -38,16 +38,10 @@ export interface ProductProps {
 }
 
 const create = async (props: ProductProps) => {
-  const { 
-    name, 
-    categoryId, 
-    price, 
-    priceWidthDiscount, 
-    description, 
-    headline 
-  } = props;
+  const { name, categoryId, price, priceWidthDiscount, description, headline } =
+    props;
 
-  const slug = name.replace('','-').toLowerCase();
+  const slug = name.replace("", "-").toLowerCase();
 
   const data = {
     name,
