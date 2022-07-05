@@ -1,11 +1,15 @@
 {
-  "name": "api-width-tests",
+  "name": "express-with-tests",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node server.ts",
-    "test": "jest"
+    "start": "ts-node -r tsconfig-paths/register server.ts",
+    "prettier": "prettier --write './**/*.ts'",
+    "test": "DATABASE_URL=postgresql://ecommerce:ecommerce@localhost:5432/ecommerce_test?schema=public jest",
+    "test:migrate": "DATABASE_URL=postgresql://ecommerce:ecommerce@localhost:5432/ecommerce_test?schema=public prisma migrate dev",
+    "ci:test": "jest --runInBand",
+    "ci:migrate": "prisma migrate dev"
   },
   "keywords": [],
   "author": "",
@@ -16,13 +20,18 @@
     "@types/node": "^17.0.40",
     "@types/supertest": "^2.0.12",
     "jest": "^28.1.0",
+    "prettier": "^2.6.2",
+    "prisma": "^3.15.1",
     "supertest": "^6.2.3",
     "ts-jest": "^28.0.4",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.3"
   },
   "dependencies": {
+    "@prisma/client": "^3.15.1",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "pino": "^8.1.0",
+    "tsconfig-paths": "^4.0.0"
   }
 }
