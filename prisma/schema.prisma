@@ -22,7 +22,7 @@ model Product {
   price Float @default(0.0)
 
   slug String @default("") @unique
-  priceWidthDiscount Float @default(0.0)
+  priceWithDiscount Float @default(0.0)
   headline String @default("")
   description String @default("")
 
