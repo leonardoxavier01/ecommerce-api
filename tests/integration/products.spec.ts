@@ -55,7 +55,7 @@ describe("Products", () => {
         categoryId: category.id,
       });
 
-      productId = product.id;
+      productId = product.slug;
     });
 
     afterAll(async () => {
