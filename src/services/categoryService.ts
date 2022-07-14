@@ -16,4 +16,19 @@ const findOne = async (categoryId: string) => {
   return category;
 };
 
-export default { find, findOne };
+const create = async (name: string) => {
+  return database.category.create({ data: { name } });
+};
+
+const deleteOne = async (categoryId: string) => {
+  return database.category.delete({ where: { id: categoryId } });
+};
+
+const updateOne = async (categoryId: string, name: string) => {
+  return database.category.update({
+    where: { id: categoryId },
+    data: { name },
+  });
+};
+
+export default { find, findOne, create, deleteOne, updateOne };

@@ -7,9 +7,11 @@ import { find } from "@src/services/categoryService";
 
 import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
 const SECRET = process.env.JWT_SECRET;
 const app = express();
+app.use(express.json());
 
 app.get("/categories", async (req: Request, res: Response) => {
   const categories = await categoryService.find();
@@ -43,12 +45,6 @@ app.get("/products/:id", async (req: Request, res: Response) => {
   res.json(product);
 });
 
-app.post("/admin/categories", async (req: Request, res: Response) => {
-  console.log(req);
-
-  res.json({});
-});
-
 app.post("/admin/me", async (req: Request, res: Response) => {
   const { authorization } = req.headers;
 
@@ -68,5 +64,40 @@ app.post("/admin/me", async (req: Request, res: Response) => {
   res.status(400);
   res.json({ error: "missing authorization header" });
 });
+
+app.post("/admin/categories", async (req: Request, res: Response) => {
+  const { name } = req.body;
+
+  try {
+    const category = await categoryService.create(name);
+    res.json({ category });
+  } catch (error) {
+    res.status(400);
+    res.json({ error: "Invalid name" });
+  }
+});
+
+app.delete(
+  "/admin/categories/:categoryId",
+  async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+
+    try {
+      const category = await categoryService.deleteOne(categoryId);
+      res.json({ category });
+    } catch (err) {
+      res.json({ error: "category id not found" });
+    }
+  }
+);
+
+app.put("/admin/categories/:categoryId", async (req: Request, res: Response) => {
+  const { categoryId} = req.params
+  const {name}= req.body
+
+  const category = await categoryService.updateOne(categoryId, name)
+
+  res.json({category})
+})
 
 export default app;
