@@ -1,17 +1,37 @@
 import "dotenv/config";
-import express from "express";
+import express, { NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import logger from "@src/adapters/logger";
-import { find } from "@src/services/categoryService";
 
 import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
 const SECRET = process.env.JWT_SECRET;
 const app = express();
 app.use(express.json());
+
+const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { authorization } = req.headers;
+
+  if (authorization) {
+    const [_, token] = authorization.split(" ");
+
+    try {
+      const payload = jwt.verify(token, `${SECRET}`);
+      return next();
+    } catch (err) {
+      res.status(401);
+      return res.json({ error: "invalid token" });
+    }
+  }
+  res.status(400);
+  res.json({ error: "missing authorization header" });
+};
 
 app.get("/categories", async (req: Request, res: Response) => {
   const categories = await categoryService.find();
@@ -45,40 +65,25 @@ app.get("/products/:id", async (req: Request, res: Response) => {
   res.json(product);
 });
 
-app.post("/admin/me", async (req: Request, res: Response) => {
-  const { authorization } = req.headers;
-
-  if (authorization) {
-    const [_, token] = authorization.split(" ");
+app.post(
+  "/admin/categories",
+  authenticate,
+  async (req: Request, res: Response) => {
+    const { name } = req.body;
 
     try {
-      const payload = jwt.verify(token, `${SECRET}`);
-      res.json({ payload });
-    } catch (err) {
-      res.status(401);
-      res.json({ error: "invalid token" });
+      const category = await categoryService.create(name);
+      res.json({ category });
+    } catch (error) {
+      res.status(400);
+      res.json({ error: "Invalid name" });
     }
-
-    return;
   }
-  res.status(400);
-  res.json({ error: "missing authorization header" });
-});
-
-app.post("/admin/categories", async (req: Request, res: Response) => {
-  const { name } = req.body;
-
-  try {
-    const category = await categoryService.create(name);
-    res.json({ category });
-  } catch (error) {
-    res.status(400);
-    res.json({ error: "Invalid name" });
-  }
-});
+);
 
 app.delete(
   "/admin/categories/:categoryId",
+  authenticate,
   async (req: Request, res: Response) => {
     const { categoryId } = req.params;
 
@@ -91,13 +96,17 @@ app.delete(
   }
 );
 
-app.put("/admin/categories/:categoryId", async (req: Request, res: Response) => {
-  const { categoryId} = req.params
-  const {name}= req.body
+app.put(
+  "/admin/categories/:categoryId",
+  authenticate,
+  async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    const { name } = req.body;
 
-  const category = await categoryService.updateOne(categoryId, name)
+    const category = await categoryService.updateOne(categoryId, name);
 
-  res.json({category})
-})
+    res.json({ category });
+  }
+);
 
 export default app;
