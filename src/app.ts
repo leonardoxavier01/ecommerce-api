@@ -109,4 +109,21 @@ app.put(
   }
 );
 
+app.put(
+  "/admin/products/:productId",
+  authenticate,
+  async (req: Request, res: Response) => {
+    const { productId } = req.params;
+    const { price, description, name } = req.body;
+
+    const product = await productService.updateOne(productId, {
+      price,
+      description,
+      name
+    });
+
+    res.json({ product });
+  }
+);
+
 export default app;
