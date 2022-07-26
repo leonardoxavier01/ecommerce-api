@@ -64,19 +64,25 @@ interface ProductUpdateOne {
   price: number;
   description: string;
   name: string;
+  image: string;
 }
 
 const updateOne = async (productId: string, values: ProductUpdateOne) => {
-  const { price, description, name } = values;
+  const { price, description, name, image } = values;
 
-  const slug = toSlug(name);
+  let slug = null;
+
+  if (name != null) {
+    slug = toSlug(name);
+  }
 
   return database.product.update({
     where: { id: productId },
     data: {
       name: name != null ? name : undefined,
-      slug: name != null ? slug : undefined,
+      slug: slug != null ? slug : undefined,
       price: price != null ? price : undefined,
+      image: image != null ? image : undefined,
       description: description != null ? description : undefined,
     },
   });

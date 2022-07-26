@@ -3,13 +3,28 @@ import express, { NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import logger from "@src/adapters/logger";
+import cors from "cors";
 
 import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
+import uploadService from "@src/services/uploadService";
+import { expressSharp, S3Adapter } from "express-sharp";
 
 const SECRET = process.env.JWT_SECRET;
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
+
+app.use(
+  '/images',
+  expressSharp({
+    imageAdapter: new S3Adapter('ecommerce-upload-funkos')
+  })
+)
 
 const authenticate = async (
   req: Request,
@@ -110,19 +125,29 @@ app.put(
 );
 
 app.put(
-  "/admin/products/:productId",
-  authenticate,
-  async (req: Request, res: Response) => {
+  "/admin/products/:productId", async (req: Request, res: Response) => {
     const { productId } = req.params;
-    const { price, description, name } = req.body;
+    const { price, description, name, image } = req.body;
 
     const product = await productService.updateOne(productId, {
       price,
       description,
-      name
+      name,
+      image
     });
 
     res.json({ product });
+  }
+);
+
+app.post(
+  "/admin/products/upload/sign-url",
+  async (req: Request, res: Response) => {
+    const contentType = req.body.type;
+    const fileName = req.body.name;
+    const itemId = req.body.id
+
+    res.json({ url: await uploadService.singUrl(contentType, itemId, fileName) });
   }
 );
 
