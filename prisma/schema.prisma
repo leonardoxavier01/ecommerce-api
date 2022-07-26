@@ -26,6 +26,8 @@ model Product {
   headline String @default("")
   description String @default("")
 
+  image String @default("")
+
   category Category @relation(fields: [categoryId], references: [id])
   categoryId String
 }
