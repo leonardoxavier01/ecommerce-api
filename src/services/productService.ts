@@ -88,4 +88,8 @@ const updateOne = async (productId: string, values: ProductUpdateOne) => {
   });
 };
 
-export default { find, findOne, create, updateOne };
+const deleteOne = async (productId: string) => {
+  return database.product.delete({ where: { id: productId } });
+};
+
+export default { find, findOne, create, updateOne, deleteOne };
