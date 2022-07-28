@@ -37,11 +37,15 @@ export interface ProductProps {
   headline?: string;
 }
 
+const toSlug = (name: string) => {
+  return name.replace(/\s/g, "-").toLowerCase();
+};
+
 const create = async (props: ProductProps) => {
   const { name, categoryId, price, priceWidthDiscount, description, headline } =
     props;
 
-  const slug = name.replace("", "-").toLowerCase();
+  const slug = toSlug(name);
 
   const data = {
     name,
@@ -56,4 +60,36 @@ const create = async (props: ProductProps) => {
   return database.product.create({ data });
 };
 
-export default { find, findOne, create };
+interface ProductUpdateOne {
+  price: number;
+  description: string;
+  name: string;
+  image: string;
+}
+
+const updateOne = async (productId: string, values: ProductUpdateOne) => {
+  const { price, description, name, image } = values;
+
+  let slug = null;
+
+  if (name != null) {
+    slug = toSlug(name);
+  }
+
+  return database.product.update({
+    where: { id: productId },
+    data: {
+      name: name != null ? name : undefined,
+      slug: slug != null ? slug : undefined,
+      price: price != null ? price : undefined,
+      image: image != null ? image : undefined,
+      description: description != null ? description : undefined,
+    },
+  });
+};
+
+const deleteOne = async (productId: string) => {
+  return database.product.delete({ where: { id: productId } });
+};
+
+export default { find, findOne, create, updateOne, deleteOne };

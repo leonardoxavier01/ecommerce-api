@@ -18,6 +18,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/jest": "^28.1.1",
     "@types/supertest": "^2.0.12",
     "jest": "^28.1.0",
@@ -27,12 +28,17 @@
     "ts-jest": "^28.0.4"
   },
   "dependencies": {
-    "@types/jsonwebtoken": "^8.5.8",
+    "@aws-sdk/client-s3": "^3.131.0",
+    "@aws-sdk/s3-request-presigner": "^3.131.0",
     "@prisma/client": "^3.15.1",
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.40",
+    "aws-sdk": "^2.1180.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "express-sharp": "^4.2.41",
     "jsonwebtoken": "^8.5.1",
     "pino": "^8.1.0",
     "ts-node": "^10.8.1",
