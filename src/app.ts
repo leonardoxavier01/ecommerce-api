@@ -149,7 +149,7 @@ app.delete(
   authenticate,
   async (req: Request, res: Response) => {
     const { categoryId } = req.params;
-    
+
     try {
       const category = await categoryService.deleteOne(categoryId);
       res.json({ category });
