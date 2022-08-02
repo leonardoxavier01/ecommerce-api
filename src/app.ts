@@ -91,7 +91,7 @@ app.post(
       name,
       categoryId,
       price,
-      priceWidthDiscount,
+      priceWithDiscount,
       description,
       headline,
     } = req.body;
@@ -101,7 +101,7 @@ app.post(
         name,
         categoryId,
         price,
-        priceWidthDiscount,
+        priceWithDiscount,
         description,
         headline,
       });
@@ -177,10 +177,11 @@ app.put(
   authenticate,
   async (req: Request, res: Response) => {
     const { productId } = req.params;
-    const { price, description, name, image } = req.body;
+    const { price, priceWithDiscount, description, name, image } = req.body;
 
     const product = await productService.updateOne(productId, {
       price,
+      priceWithDiscount,
       description,
       name,
       image,

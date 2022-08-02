@@ -32,7 +32,7 @@ export interface ProductProps {
   name: string;
   categoryId: string;
   price?: number;
-  priceWidthDiscount?: number;
+  priceWithDiscount?: number;
   description?: string;
   headline?: string;
 }
@@ -42,7 +42,7 @@ const toSlug = (name: string) => {
 };
 
 const create = async (props: ProductProps) => {
-  const { name, categoryId, price, priceWidthDiscount, description, headline } =
+  const { name, categoryId, price, priceWithDiscount, description, headline } =
     props;
 
   const slug = toSlug(name);
@@ -52,7 +52,7 @@ const create = async (props: ProductProps) => {
     slug,
     categoryId,
     price,
-    priceWidthDiscount,
+    priceWithDiscount,
     description,
     headline,
   };
@@ -62,13 +62,14 @@ const create = async (props: ProductProps) => {
 
 interface ProductUpdateOne {
   price: number;
+  priceWithDiscount: number;
   description: string;
   name: string;
   image: string;
 }
 
 const updateOne = async (productId: string, values: ProductUpdateOne) => {
-  const { price, description, name, image } = values;
+  const { price, priceWithDiscount, description, name, image } = values;
 
   let slug = null;
 
@@ -82,6 +83,8 @@ const updateOne = async (productId: string, values: ProductUpdateOne) => {
       name: name != null ? name : undefined,
       slug: slug != null ? slug : undefined,
       price: price != null ? price : undefined,
+      priceWithDiscount:
+        priceWithDiscount != null ? priceWithDiscount : undefined,
       image: image != null ? image : undefined,
       description: description != null ? description : undefined,
     },
