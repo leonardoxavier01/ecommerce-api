@@ -15,10 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      "https://boiling-earth-73197.herokuapp.com/",
-      "http://localhost:3000",
-    ],
+    origin: ["*"],
   })
 );
 
