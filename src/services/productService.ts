@@ -64,12 +64,14 @@ interface ProductUpdateOne {
   price: number;
   priceWithDiscount: number;
   description: string;
+  headline: string;
   name: string;
   image: string;
 }
 
 const updateOne = async (productId: string, values: ProductUpdateOne) => {
-  const { price, priceWithDiscount, description, name, image } = values;
+  const { price, priceWithDiscount, headline, description, name, image } =
+    values;
 
   let slug = null;
 
@@ -86,6 +88,7 @@ const updateOne = async (productId: string, values: ProductUpdateOne) => {
       priceWithDiscount:
         priceWithDiscount != null ? priceWithDiscount : undefined,
       image: image != null ? image : undefined,
+      headline: headline != null ? headline : undefined,
       description: description != null ? description : undefined,
     },
   });
