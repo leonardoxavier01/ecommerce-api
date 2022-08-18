@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "https://boiling-earth-73197.herokuapp.com/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
 
