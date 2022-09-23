@@ -10,6 +10,8 @@ import productService from "@src/services/productService";
 import uploadService from "@src/services/uploadService";
 import { expressSharp, S3Adapter } from "express-sharp";
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 const SECRET = `${process.env.JWT_SECRET}`;
 const app = express();
 app.use(express.json());
@@ -232,6 +234,51 @@ app.post("/admin/auth", async (req: Request, res: Response) => {
 
 app.get("/admin/me", authenticate, async (_req: Request, res: Response) => {
   res.json({ auth: true });
+});
+
+app.post("/create-checkout-session", async (req: Request, res: Response) => {
+  // const { cartArray } = req.body;
+
+  const cartArray = [
+    { productId: "cl8ca4xqn007182v6lh8gz9bp", quantity: 1 },
+    { productId: "cl8ca6clb014882v6xb1u9vy6", quantity: 2 },
+  ];
+
+  const getProductsDatabase = cartArray.map(async (item) => {
+    const product = await productService.findOneForId(item.productId);
+    return {
+      ...product,
+      quantity: item.quantity,
+    };
+  });
+
+  return Promise.all(getProductsDatabase).then(async (items) => {
+    const line_items: any = [];
+
+    items.forEach((item) => {
+      const itemForStripe = {
+        price_data: {
+          currency: "brl",
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.priceWithDiscount && item.priceWithDiscount * 100,
+        },
+        quantity: item.quantity,
+      };
+      line_items.push(itemForStripe);
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      line_items,
+      mode: "payment",
+      success_url: `${process.env.SERVER_CLIENT}/checkout/success?success=true`,
+      cancel_url: `${process.env.SERVER_CLIENT}/checkout/canceled?canceled=true`,
+    });
+
+    res.redirect(303, session.url);
+    // return res.json({ data: session.url });
+  });
 });
 
 export default app;
