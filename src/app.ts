@@ -274,6 +274,8 @@ app.post("/create-checkout-session", async (req: Request, res: Response) => {
       cancel_url: `${process.env.SERVER_CLIENT}/checkout/canceled?canceled=true`,
     });
 
+    console.log('Heroku teste')
+
     return res.json({ data: session.url });
   });
 });
