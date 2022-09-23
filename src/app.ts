@@ -15,10 +15,8 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      "https://boiling-earth-73197.herokuapp.com/",
-      "http://localhost:3000",
-    ],
+    origin: "https://boiling-earth-73197.herokuapp.com/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
 
@@ -177,11 +175,13 @@ app.put(
   authenticate,
   async (req: Request, res: Response) => {
     const { productId } = req.params;
-    const { price, priceWithDiscount, description, name, image } = req.body;
+    const { price, priceWithDiscount, headline, description, name, image } =
+      req.body;
 
     const product = await productService.updateOne(productId, {
       price,
       priceWithDiscount,
+      headline,
       description,
       name,
       image,
