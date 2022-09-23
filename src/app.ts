@@ -240,11 +240,6 @@ app.get("/admin/me", authenticate, async (_req: Request, res: Response) => {
 app.post("/create-checkout-session", async (req: Request, res: Response) => {
   const { productsForCheckout } = req.body;
 
-  // const mockCartArray = [
-  //   { productId: "cl8ca4xqn007182v6lh8gz9bp", quantity: 1 },
-  //   { productId: "cl8ca6clb014882v6xb1u9vy6", quantity: 2 },
-  // ];
-
   const getProductsDatabase = productsForCheckout.map(
     async (item: { productId: string; quantity: number }) => {
       const product = await productService.findOneForId(item.productId);
@@ -279,7 +274,6 @@ app.post("/create-checkout-session", async (req: Request, res: Response) => {
       cancel_url: `${process.env.SERVER_CLIENT}/checkout/canceled?canceled=true`,
     });
 
-    //res.redirect(303, session.url);
     return res.json({ data: session.url });
   });
 });
