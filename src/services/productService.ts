@@ -28,6 +28,16 @@ const findOne = async (productId: string) => {
   return product;
 };
 
+const findOneForId = async (productId: string) => {
+  const product = await database.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  return product;
+};
+
 export interface ProductProps {
   name: string;
   categoryId: string;
@@ -98,4 +108,4 @@ const deleteOne = async (productId: string) => {
   return database.product.delete({ where: { id: productId } });
 };
 
-export default { find, findOne, create, updateOne, deleteOne };
+export default { find, findOne, create, updateOne, deleteOne, findOneForId };
