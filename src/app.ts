@@ -9,13 +9,16 @@ import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
 import uploadService from "@src/services/uploadService";
 import { expressSharp, S3Adapter } from "express-sharp";
+import { TypeItemForStripe } from "types";
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const SECRET = `${process.env.JWT_SECRET}`;
 const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://boiling-earth-73197.herokuapp.com/",
+    origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
@@ -232,6 +235,47 @@ app.post("/admin/auth", async (req: Request, res: Response) => {
 
 app.get("/admin/me", authenticate, async (_req: Request, res: Response) => {
   res.json({ auth: true });
+});
+
+app.post("/create-checkout-session", async (req: Request, res: Response) => {
+  const { productsForCheckout } = req.body;
+
+  const getProductsDatabase = productsForCheckout.map(
+    async (item: { productId: string; quantity: number }) => {
+      const product = await productService.findOneForId(item.productId);
+      return {
+        ...product,
+        quantity: item.quantity,
+      };
+    }
+  );
+
+  return Promise.all(getProductsDatabase).then(async (items) => {
+    const line_items: TypeItemForStripe[] = [];
+
+    items.forEach((item) => {
+      const itemForStripe: TypeItemForStripe = {
+        price_data: {
+          currency: "brl",
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.priceWithDiscount && item.priceWithDiscount * 100,
+        },
+        quantity: item.quantity,
+      };
+      line_items.push(itemForStripe);
+    });
+
+    const session = await stripe.checkout.sessions.create({
+      line_items,
+      mode: "payment",
+      success_url: `${process.env.SERVER_CLIENT}/checkout/success?success=true`,
+      cancel_url: `${process.env.SERVER_CLIENT}/checkout/canceled?canceled=true`,
+    });
+
+    return res.json({ data: session.url });
+  });
 });
 
 export default app;
