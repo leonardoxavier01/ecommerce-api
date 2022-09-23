@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://boiling-earth-73197.herokuapp.com/",
+    origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
@@ -238,20 +238,22 @@ app.get("/admin/me", authenticate, async (_req: Request, res: Response) => {
 });
 
 app.post("/create-checkout-session", async (req: Request, res: Response) => {
-  // const { cartArray } = req.body;
+  const { productsForCheckout } = req.body;
 
-  const mockCartArray = [
-    { productId: "cl8ca4xqn007182v6lh8gz9bp", quantity: 1 },
-    { productId: "cl8ca6clb014882v6xb1u9vy6", quantity: 2 },
-  ];
+  // const mockCartArray = [
+  //   { productId: "cl8ca4xqn007182v6lh8gz9bp", quantity: 1 },
+  //   { productId: "cl8ca6clb014882v6xb1u9vy6", quantity: 2 },
+  // ];
 
-  const getProductsDatabase = mockCartArray.map(async (item) => {
-    const product = await productService.findOneForId(item.productId);
-    return {
-      ...product,
-      quantity: item.quantity,
-    };
-  });
+  const getProductsDatabase = productsForCheckout.map(
+    async (item: { productId: string; quantity: number }) => {
+      const product = await productService.findOneForId(item.productId);
+      return {
+        ...product,
+        quantity: item.quantity,
+      };
+    }
+  );
 
   return Promise.all(getProductsDatabase).then(async (items) => {
     const line_items: TypeItemForStripe[] = [];
@@ -277,8 +279,8 @@ app.post("/create-checkout-session", async (req: Request, res: Response) => {
       cancel_url: `${process.env.SERVER_CLIENT}/checkout/canceled?canceled=true`,
     });
 
-    res.redirect(303, session.url);
-    // return res.json({ data: session.url });
+    //res.redirect(303, session.url);
+    return res.json({ data: session.url });
   });
 });
 
