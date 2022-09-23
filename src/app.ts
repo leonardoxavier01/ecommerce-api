@@ -9,6 +9,7 @@ import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
 import uploadService from "@src/services/uploadService";
 import { expressSharp, S3Adapter } from "express-sharp";
+import { TypeItemForStripe } from "types";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -239,12 +240,12 @@ app.get("/admin/me", authenticate, async (_req: Request, res: Response) => {
 app.post("/create-checkout-session", async (req: Request, res: Response) => {
   // const { cartArray } = req.body;
 
-  const cartArray = [
+  const mockCartArray = [
     { productId: "cl8ca4xqn007182v6lh8gz9bp", quantity: 1 },
     { productId: "cl8ca6clb014882v6xb1u9vy6", quantity: 2 },
   ];
 
-  const getProductsDatabase = cartArray.map(async (item) => {
+  const getProductsDatabase = mockCartArray.map(async (item) => {
     const product = await productService.findOneForId(item.productId);
     return {
       ...product,
@@ -253,10 +254,10 @@ app.post("/create-checkout-session", async (req: Request, res: Response) => {
   });
 
   return Promise.all(getProductsDatabase).then(async (items) => {
-    const line_items: any = [];
+    const line_items: TypeItemForStripe[] = [];
 
     items.forEach((item) => {
-      const itemForStripe = {
+      const itemForStripe: TypeItemForStripe = {
         price_data: {
           currency: "brl",
           product_data: {
