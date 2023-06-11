@@ -238,9 +238,9 @@ app.get("/admin/me", authenticate, async (_req: Request, res: Response) => {
 });
 
 app.post("/create-checkout-session", async (req: Request, res: Response) => {
-  const { productsForCheckout } = req.body;
+  const { arrayStripe } = req.body;
 
-  const getProductsDatabase = productsForCheckout.map(
+  const getProductsDatabase = arrayStripe.map(
     async (item: { productId: string; quantity: number }) => {
       const product = await productService.findOneForId(item.productId);
       return {
