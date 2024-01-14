@@ -1,9 +1,8 @@
-import "dotenv/config";
-import express, { NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
 import logger from "@src/adapters/logger";
 import cors from "cors";
+import "dotenv/config";
+import express, { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 import categoryService from "@src/services/categoryService";
 import productService from "@src/services/productService";
@@ -273,9 +272,38 @@ app.post("/create-checkout-session", async (req: Request, res: Response) => {
       success_url: `${process.env.SERVER_CLIENT}/checkout/success?success=true`,
       cancel_url: `${process.env.SERVER_CLIENT}/checkout/canceled?canceled=true`,
     });
-
+     
     return res.json({ data: session.url });
   });
+});
+
+const endpointSecret = "whsec_1e280c6fdc5930818d424de24cee84358004018d8a23123637c564541923d0df";
+
+app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+  const sig = request.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+  } catch (err) {
+    response.status(400).send(`Webhook Error: ${err}`);
+    return;
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntentSucceeded = event.data.object;
+      // Then define and call a function to handle the event payment_intent.succeeded
+      break;
+    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  // Return a 200 response to acknowledge receipt of the event
+  response.send();
 });
 
 export default app;
